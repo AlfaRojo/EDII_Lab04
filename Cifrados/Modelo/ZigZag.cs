@@ -26,6 +26,35 @@ namespace Cifrados.Modelo
 			var elevador = false;
 
 			// aqui necesito un bufer que mande a llamar al archivo guardado en la API
+			// a continuacion se coloca lo que ira dentro del foreach del buffer
+			byte item = 32; // se coloco esta variable provisionalmente, al momento de poner el buffer se eliminará
+			DicNiveles.ElementAt(posicionNivel - 1).Value.ListaCaracter.Add(item);
+			if (!elevador)
+			{
+				if (posicionNivel == niveles)
+				{
+					posicionNivel--;
+					elevador = true;
+				}
+				else
+				{
+					posicionNivel++;
+				}
+			}
+			else
+			{
+				if (posicionNivel == 1)
+				{
+					posicionNivel++;
+					elevador = false;
+				}
+				else
+				{
+					posicionNivel--;
+				}
+			}
+			// aqui termina el segmento que va dentro del foreach
+
 		}
 	}
 }
