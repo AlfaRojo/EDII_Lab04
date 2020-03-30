@@ -55,6 +55,38 @@ namespace Cifrados.Modelo
 			}
 			// aqui termina el segmento que va dentro del foreach
 
+			// esta seccion es cuando faltan caracteres y se rellenan con un caracter aleatorio
+			var seed = Environment.TickCount;
+			var byteAleatorio = new Random(seed);
+			while (posicionNivel - 1 != 1)
+			{
+				DicNiveles.ElementAt(posicionNivel - 1).Value.ListaCaracter.Add(Convert.ToByte(36));
+				if (!elevador)
+				{
+					if (posicionNivel == niveles)
+					{
+						posicionNivel--;
+						elevador = true;
+					}
+					else
+					{
+						posicionNivel++;
+					}
+				}
+				else
+				{
+					if (posicionNivel == 1)
+					{
+						posicionNivel++;
+						elevador = false;
+					}
+					else
+					{
+						posicionNivel--;
+					}
+				}
+
+			}
 		}
 	}
 }
