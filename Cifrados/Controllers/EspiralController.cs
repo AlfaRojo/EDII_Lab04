@@ -13,11 +13,11 @@ namespace Cifrados.Controllers
         {
             if (!(int.TryParse(Tipos.Key, out int x)))
             {
-
+                return new string[] { "El valor de -KEY- no puede ser un número" };
             }
             else
             {
-                return new string[] { "El valor de -KEY- no puede ser un número" };
+                
             }
             return new string[] { "Satisfactorio" };
         }
