@@ -6,9 +6,65 @@ namespace Cifrados.Cifrados
 {
     public class Espiral
     {
-        public void TodoEspiral(FileStream ArchivoImportado, string Opcion, int Ancho, string Reloj)//Modificar para Cifrado/Desifrado
+        public void TodoEspiral(FileStream ArchivoImportado, string opcion, int ancho, string reloj)//Modificar para Cifrado/Desifrado
         {
-            //Modificar y llamar metodos
+            var cifradoOp = true;
+            if (opcion == "Descifrar")
+            {
+                cifradoOp = false;
+            }
+            var direccion = true;
+            if (reloj != "Abajo")
+            {
+                direccion = false;
+            }
+            var extensionNuevoArchivo = string.Empty;
+            var nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
+            var extrencion = Path.GetExtension(ArchivoImportado.Name);
+            if (ArchivoImportado != null)
+            {
+                var archivoByte = new byte[ArchivoImportado.Length];
+                var i = 0;
+                using (var lectura = new BinaryReader(ArchivoImportado))
+                {
+                    while (lectura.BaseStream.Position != lectura.BaseStream.Length)
+                    {
+                        archivoByte[i] = lectura.ReadByte();
+                        i++;
+                    }
+                }
+                if (cifradoOp && extrencion == ".txt")
+                {
+                    extensionNuevoArchivo = ".cif";
+                }
+                if (!cifradoOp && extrencion == ".cif")
+                {
+                    extensionNuevoArchivo = ".txt";
+                }
+                if (extensionNuevoArchivo != null)
+                {
+                    var txtResultado = new byte[1];
+                    if (cifradoOp)
+                    {
+                        var txtCifrado = CifradoEspiral(ancho, direccion, archivoByte);
+                        txtResultado = new byte[txtCifrado.Length];
+                        txtResultado = txtCifrado;
+                    }
+                    else
+                    {
+                        var txtDesifrado = DescifradoEspiral(ancho, direccion, archivoByte);
+                        txtResultado = new byte[txtDesifrado.Length];
+                        txtResultado = txtDesifrado;
+                    }
+                    using (var writeStream = new FileStream(("Mis Cifrados/" + nombreArchivo + extensionNuevoArchivo), FileMode.OpenOrCreate))
+                    {
+                        using (var writer = new BinaryWriter(writeStream))
+                        {
+                            writer.Write(txtResultado);
+                        }
+                    }
+                }
+            }
         }
         public static byte[] CifradoEspiral(int Ancho, bool Abajo, byte[] TextoEncripcion)
         {

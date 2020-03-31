@@ -1,6 +1,7 @@
 ﻿using Cifrados.Modelo;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Cifrados.Controllers
 {
@@ -11,13 +12,29 @@ namespace Cifrados.Controllers
         [HttpPost]
         public ActionResult<IEnumerable<string>> Post([FromForm]Requisitos Tipos)
         {
+            if (Tipos.File == null)
+            {
+                return BadRequest(new string[] { "El valor -File- es inválido" });
+            }
+            else if (Tipos.Name == null)
+            {
+                return BadRequest(new string[] { "El valor -File- es inválido" });
+            }
+            var extension = Path.GetExtension(Tipos.File.Name);
+            if (extension != ".cif" || extension != ".txt")
+            {
+                return BadRequest(new string[] { "Extención no válida" });
+            }
             if (!(int.TryParse(Tipos.Key, out int x)))
             {
-
+                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.Name, FileMode.OpenOrCreate))
+                {
+                    //Mandar parametros a clase/métodos
+                }
             }
-            else
+            else if (Tipos.Key == null)
             {
-                return new string[] { "El valor de -KEY- no puede ser un número" };
+                return BadRequest(new string[] { "El valor -KEY- no puede ser un número" });
             }
             return new string[] { "Satisfactorio" };
         }
