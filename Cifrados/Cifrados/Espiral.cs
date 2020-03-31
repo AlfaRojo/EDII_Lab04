@@ -8,17 +8,6 @@ namespace Cifrados.Cifrados
     {
         public void TodoEspiral(FileStream ArchivoImportado, string opcion, int ancho, string reloj)//Modificar para Cifrado/Desifrado
         {
-            var cifradoOp = true;
-            if (opcion == "Descifrar")
-            {
-                cifradoOp = false;
-            }
-            var direccion = true;
-            if (reloj != "Abajo")
-            {
-                direccion = false;
-            }
-            var extensionNuevoArchivo = string.Empty;
             var nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
             var extrencion = Path.GetExtension(ArchivoImportado.Name);
             if (ArchivoImportado != null)
@@ -33,42 +22,31 @@ namespace Cifrados.Cifrados
                         i++;
                     }
                 }
-                if (cifradoOp && extrencion == ".txt")
+                var txtResultado = new byte[1];
+                if (opcion == "Descifrar")
                 {
-                    extensionNuevoArchivo = ".cif";
+                    var txtCifrado = DesifrarEspiral(ancho, reloj, archivoByte);
+                    txtResultado = new byte[txtCifrado.Length];
+                    txtResultado = txtCifrado;
                 }
-                if (!cifradoOp && extrencion == ".cif")
+                else
                 {
-                    extensionNuevoArchivo = ".txt";
+                    var txtDesifrado = CifradoEspiral(ancho, reloj, archivoByte);
+                    txtResultado = new byte[txtDesifrado.Length];
+                    txtResultado = txtDesifrado;
                 }
-                if (extensionNuevoArchivo != null)
+                using (var writeStream = new FileStream(("Mis Cifrados/" + nombreArchivo + ".txt"), FileMode.OpenOrCreate))
                 {
-                    var txtResultado = new byte[1];
-                    if (cifradoOp)
+                    using (var writer = new BinaryWriter(writeStream))
                     {
-                        var txtCifrado = CifradoEspiral(ancho, direccion, archivoByte);
-                        txtResultado = new byte[txtCifrado.Length];
-                        txtResultado = txtCifrado;
-                    }
-                    else
-                    {
-                        var txtDesifrado = DescifradoEspiral(ancho, direccion, archivoByte);
-                        txtResultado = new byte[txtDesifrado.Length];
-                        txtResultado = txtDesifrado;
-                    }
-                    using (var writeStream = new FileStream(("Mis Cifrados/" + nombreArchivo + extensionNuevoArchivo), FileMode.OpenOrCreate))
-                    {
-                        using (var writer = new BinaryWriter(writeStream))
-                        {
-                            writer.Write(txtResultado);
-                        }
+                        writer.Write(txtResultado);
                     }
                 }
             }
         }
-        public static byte[] CifradoEspiral(int Ancho, bool Abajo, byte[] TextoEncripcion)
+        public static byte[] DesifrarEspiral(int Ancho, string Abajo, byte[] txtEncript)
         {
-            var DivisionAncho = Math.Ceiling(Convert.ToDecimal(TextoEncripcion.Length) / Convert.ToDecimal(Ancho));
+            var DivisionAncho = Math.Ceiling(Convert.ToDecimal(txtEncript.Length) / Convert.ToDecimal(Ancho));
             var Altura = Convert.ToInt32(DivisionAncho);
             var DCircularMatriz = new byte[Ancho, Altura];
 
@@ -77,9 +55,9 @@ namespace Cifrados.Cifrados
             {
                 for (int j = 0; j < Ancho; j++)
                 {
-                    if (PosicionTexto < TextoEncripcion.Length)
+                    if (PosicionTexto < txtEncript.Length)
                     {
-                        DCircularMatriz[j, i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[j, i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     else
@@ -93,7 +71,7 @@ namespace Cifrados.Cifrados
             var AnchoAux = Ancho;
             var AltoAux = Altura;
             var contador = 0;
-            if (Abajo)
+            if (Abajo == "Abajo")
             {
                 for (int i = 0; i < CantidadIteraciones; i++)
                 {
@@ -191,9 +169,9 @@ namespace Cifrados.Cifrados
             }
             return REGRESA;
         }
-        public static byte[] DescifradoEspiral(int Ancho, bool Abajo, byte[] TextoEncripcion)
+        public static byte[] CifradoEspiral(int Ancho, string Abajo, byte[] txtEncript)
         {
-            var DivisionAncho = Math.Ceiling(Convert.ToDecimal(TextoEncripcion.Length) / Convert.ToDecimal(Ancho));
+            var DivisionAncho = Math.Ceiling(Convert.ToDecimal(txtEncript.Length) / Convert.ToDecimal(Ancho));
             var Altura = Convert.ToInt32(DivisionAncho);
             var DCircularMatriz = new byte[Ancho, Altura];
             var PosicionTexto = 0;
@@ -201,35 +179,35 @@ namespace Cifrados.Cifrados
             var AltoAux = Altura;
             var CantidadIteraciones = Ancho < Altura ? Ancho / 2 : Altura / 2;
             var contador = 0;
-            if (TextoEncripcion.Length < (Ancho * Altura))
+            if (txtEncript.Length < (Ancho * Altura))
             {
-                for (int i = TextoEncripcion.Length; i <= Ancho * Altura; i++)
+                for (int i = txtEncript.Length; i <= Ancho * Altura; i++)
                 {
-                    TextoEncripcion[i] = 0;
+                    txtEncript[i] = 0;
                 }
             }
-            if (Abajo)
+            if (Abajo == "Abajo")
             {
                 for (int i = 0; i < CantidadIteraciones; i++)
                 {
                     for (int j = i; j < AltoAux + i; j++)
                     {
-                        DCircularMatriz[i, j] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[i, j] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     for (int j = i + 1; j < AnchoAux + i; j++)
                     {
-                        DCircularMatriz[j, AltoAux - 1 + i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[j, AltoAux - 1 + i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     for (int j = AltoAux - 2 + i; j >= i; j--)
                     {
-                        DCircularMatriz[AnchoAux - 1 + i, j] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[AnchoAux - 1 + i, j] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     for (int j = AnchoAux - 2 + i; j > i; j--)
                     {
-                        DCircularMatriz[j, i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[j, i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     AnchoAux = AnchoAux - 2;
@@ -239,7 +217,7 @@ namespace Cifrados.Cifrados
                 {
                     for (int i = CantidadIteraciones; i < AltoAux + CantidadIteraciones; i++)
                     {
-                        DCircularMatriz[CantidadIteraciones, i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[CantidadIteraciones, i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     AnchoAux = 0;
@@ -249,7 +227,7 @@ namespace Cifrados.Cifrados
                 {
                     for (int i = CantidadIteraciones; i < AnchoAux + CantidadIteraciones; i++)
                     {
-                        DCircularMatriz[i, CantidadIteraciones] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[i, CantidadIteraciones] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     AnchoAux = 0;
@@ -262,22 +240,22 @@ namespace Cifrados.Cifrados
                 {
                     for (int j = i; j < AnchoAux + i; j++)
                     {
-                        DCircularMatriz[j, i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[j, i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     for (int j = i + 1; j < AltoAux + i; j++)
                     {
-                        DCircularMatriz[AnchoAux - 1 + i, j] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[AnchoAux - 1 + i, j] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     for (int j = AnchoAux - 2 + i; j >= i; j--)
                     {
-                        DCircularMatriz[j, AltoAux - 1 + i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[j, AltoAux - 1 + i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     for (int j = AltoAux - 2 + i; j > i; j--)
                     {
-                        DCircularMatriz[i, j] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[i, j] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     AnchoAux = AnchoAux - 2;
@@ -287,7 +265,7 @@ namespace Cifrados.Cifrados
                 {
                     for (int i = CantidadIteraciones; i < AltoAux + CantidadIteraciones; i++)
                     {
-                        DCircularMatriz[CantidadIteraciones, i] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[CantidadIteraciones, i] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     AnchoAux = 0;
@@ -297,7 +275,7 @@ namespace Cifrados.Cifrados
                 {
                     for (int i = CantidadIteraciones; i < AnchoAux + CantidadIteraciones; i++)
                     {
-                        DCircularMatriz[i, CantidadIteraciones] = TextoEncripcion[PosicionTexto];
+                        DCircularMatriz[i, CantidadIteraciones] = txtEncript[PosicionTexto];
                         PosicionTexto++;
                     }
                     AnchoAux = 0;

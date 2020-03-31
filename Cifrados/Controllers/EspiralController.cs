@@ -25,10 +25,9 @@ namespace Cifrados.Controllers
             {
                 return BadRequest(new string[] { "El valor -Key- es inválido" });
             }
-            var extension = Path.GetExtension(Tipos.File.Name);
-            if (extension != ".cif"  || extension != ".txt")
+            if (Path.GetExtension(Tipos.File.Name) != ".txt")
             {
-                return BadRequest(new string[] { "Extención no válida" });
+                return BadRequest(new string[] { "Extensión no válida" });
             }
             else
             {
