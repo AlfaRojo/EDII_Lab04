@@ -103,5 +103,42 @@ namespace Cifrados.Modelo
 
 			}
 		}
+
+		public void DescifrarLEctura (string direccion, int niveles, int cantCaracteres)
+		{
+			int contadorNiveles = 0;
+			while (contadorNiveles < niveles)
+			{
+				var ListaInicial = new List<byte>();
+				DicNiveles.Add(contadorNiveles + 1, new Caracter
+				{
+					ListaCaracter = ListaInicial
+				});
+				contadorNiveles++;
+			}
+			int cantMinima = (4 * (niveles - 1)) + 1;
+			int uveNueva = (niveles * 2) - 2;
+			int p = (niveles - 2) * 2;
+			int longitudRelativa = 0;
+
+			if (cantCaracteres <= cantMinima)
+			{
+				longitudRelativa = cantMinima;
+			}
+			else
+			{
+				int elementosExtra = cantCaracteres - cantMinima;
+				int repetirUve = elementosExtra / uveNueva;
+				if (elementosExtra % uveNueva != 0)
+				{
+					repetirUve++;
+				}
+				longitudRelativa = cantMinima + (repetirUve * uveNueva);
+			}
+			int picoSuperior = (longitudRelativa + 1 + p) / (2 + p);
+			int valorIntermedio = (2 * (picoSuperior - 1));
+			int picoInferior = picoSuperior - 1;
+			int nivelIntermedio = niveles - 2;
+		}
 	}
 }
