@@ -9,6 +9,7 @@ namespace Cifrados.Modelo
             IFormFile File { get; set; }
             T Key { get; set; }
             string Name { get; set; }
+            public string Cifrado { get; set; }
         }
     }
 }

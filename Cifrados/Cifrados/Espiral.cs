@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Cifrados.Cifrados
@@ -23,17 +22,18 @@ namespace Cifrados.Cifrados
                     }
                 }
                 var txtResultado = new byte[1];
-                if (opcion == "Descifrar")
+                if (opcion == "Cifrar")
+                {
+
+                    var txtDesifrado = CifradoEspiral(ancho, reloj, archivoByte);
+                    txtResultado = new byte[txtDesifrado.Length];
+                    txtResultado = txtDesifrado;
+                }
+                else
                 {
                     var txtCifrado = DesifrarEspiral(ancho, reloj, archivoByte);
                     txtResultado = new byte[txtCifrado.Length];
                     txtResultado = txtCifrado;
-                }
-                else
-                {
-                    var txtDesifrado = CifradoEspiral(ancho, reloj, archivoByte);
-                    txtResultado = new byte[txtDesifrado.Length];
-                    txtResultado = txtDesifrado;
                 }
                 using (var writeStream = new FileStream(("Mis Cifrados/" + nombreArchivo + ".txt"), FileMode.OpenOrCreate))
                 {
