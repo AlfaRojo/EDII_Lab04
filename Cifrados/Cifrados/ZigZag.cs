@@ -23,6 +23,7 @@ namespace Cifrados.Modelo
 			var bufferLength = 50;
 			var posicionNivel = 1;
 			var elevador = false;
+			var buffer = new byte[bufferLength];
 
 			// aqui necesito un bufer que mande a llamar al archivo guardado en la API
 			// a continuacion se coloca lo que ira dentro del foreach del buffer
@@ -136,6 +137,34 @@ namespace Cifrados.Modelo
 			int valorIntermedio = (2 * (picoSuperior - 1));
 			int picoInferior = picoSuperior - 1;
 			int nivelIntermedio = niveles - 2;
+
+			int auxiliarIntermedios = nivelIntermedio;
+			int conteoIntermedios = valorIntermedio;
+			int bufferLength = 50;
+			var buffer = new byte[bufferLength];
+			// aqui necesito un bufer que mande a llamar al archivo guardado en la API
+			// a continuacion se coloca lo que ira dentro del foreach del buffer
+			byte item = 32; // se coloco esta variable provisionalmente, al momento de poner el buffer se eliminará
+			if (picoSuperior > 0)
+			{
+				DicNiveles.ElementAt(0).Value.ListaCaracter.Add(item);
+				picoSuperior--;
+			}
+			else if (picoSuperior == 0 && auxiliarIntermedios > 0)
+			{
+				DicNiveles.ElementAt((nivelIntermedio - auxiliarIntermedios) + 1).Value.ListaCaracter.Add(item);
+				conteoIntermedios--;
+				if (conteoIntermedios == 0 && nivelIntermedio > 0)
+				{
+					auxiliarIntermedios--;
+					conteoIntermedios = valorIntermedio;
+				}
+			}
+			else if (picoSuperior == 0 && auxiliarIntermedios == 0)
+			{
+				DicNiveles.ElementAt(niveles - 1).Value.ListaCaracter.Add(item);
+			}
+
 		}
 	}
 }
