@@ -17,7 +17,7 @@ namespace Cifrados.Controllers
             {
                 return BadRequest(new string[] { "El valor -File- es inválido" });
             }
-            else if (Path.GetExtension(Tipos.File.Name) != ".txt")
+            else if (Path.GetExtension(Tipos.File.FileName) != ".txt")
             {
                 return BadRequest(new string[] { "Extensión no válida" });
             }
@@ -54,8 +54,8 @@ namespace Cifrados.Controllers
                 using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.FileName, FileMode.OpenOrCreate))
                 {
                     Cesar Cesar = new Cesar();
-                    //Archivo-Llave
-                    Cesar.TodoCesar(thisFile, Key);
+                    //Archivo-Llave-Desifrado
+                    Cesar.TodoCesar(thisFile, Key, "Cifrado");
                 }
             }
             return new string[] { "Cifrado " + Tipos.Name + " satisfactorio" };
