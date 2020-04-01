@@ -27,7 +27,7 @@ namespace Cifrados.Controllers
             }
             else
             {
-                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.Name, FileMode.OpenOrCreate))
+                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.FileName, FileMode.OpenOrCreate))
                 {
                     //Mandar archivo -thisFile- y parametros de -Tipos- necesarios
                 }
@@ -41,19 +41,21 @@ namespace Cifrados.Controllers
             {
                 return BadRequest(new string[] { "El valor -File- es inválido" });
             }
-            else if (Path.GetExtension(Tipos.File.Name) != ".txt")
+            else if (Path.GetExtension(Tipos.File.FileName) != ".txt")
             {
                 return BadRequest(new string[] { "Extensión no válida" });
             }
-            else if (Tipos.Key == null)
+            else if (Tipos.Key == null || !(int.TryParse(Tipos.Key, out int Key)))
             {
                 return BadRequest(new string[] { "El valor -Key- es inválido" });
             }
             else
             {
-                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.Name, FileMode.OpenOrCreate))
+                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.FileName, FileMode.OpenOrCreate))
                 {
-                    //Mandar archivo -thisFile- y parametros de -Tipos- necesarios
+                    Cesar Cesar = new Cesar();
+                    //Archivo-Llave
+                    Cesar.TodoCesar(thisFile, Key);
                 }
             }
             return new string[] { "Cifrado " + Tipos.Name + " satisfactorio" };
@@ -79,7 +81,7 @@ namespace Cifrados.Controllers
             }
             else
             {
-                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.Name, FileMode.OpenOrCreate))
+                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.FileName, FileMode.OpenOrCreate))
                 {
                     Espiral Espiral = new Espiral();
                     //Archivo-Cifrar-Ancho-Reloj
