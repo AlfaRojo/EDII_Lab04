@@ -21,15 +21,16 @@ namespace Cifrados.Controllers
             {
                 return BadRequest(new string[] { "Extensión no válida" });
             }
-            else if (Tipos.Key == null)
+            else if (Tipos.Niveles > 0)
             {
-                return BadRequest(new string[] { "El valor -Key- es inválido" });
+                return BadRequest(new string[] { "El valor -Niveles- es inválido" });
             }
             else
             {
                 using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.FileName, FileMode.OpenOrCreate))
                 {
-                    //Mandar archivo -thisFile- y parametros de -Tipos- necesarios
+                    ZigZag zigZag = new ZigZag();
+                    zigZag.TodoZigZag(thisFile, "Descifrar", Tipos.Niveles);
                 }
             }
             return new string[] { "Cifrado " + Tipos.Name + " satisfactorio" };

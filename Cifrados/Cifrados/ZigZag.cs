@@ -40,7 +40,7 @@ namespace Cifrados.Modelo
 					txtResultado = new byte[txtCifrado.Length];
 					txtResultado = txtCifrado;
 				}
-				using (var writeStream = new FileStream(("Mis Cifrados/CIFRADO_" + opcion+"_" + nombreArchivo + ".txt"), FileMode.OpenOrCreate))
+				using (var writeStream = new FileStream(("Mis Cifrados/CIFRADO_" + opcion + "_" + nombreArchivo + ".txt"), FileMode.OpenOrCreate))
 				{
 					using (var writer = new BinaryWriter(writeStream))
 					{

@@ -11,5 +11,6 @@ namespace Cifrados.Modelo
         public string Name { get; set; }
         public string Reloj { get; set; }
         public int Ancho { get; set; }
+        public int Niveles { get; set; }
     }
 }
