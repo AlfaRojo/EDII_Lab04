@@ -62,48 +62,43 @@ namespace Cifrados.Modelo
 				ContadorNiveles++;
 			}
 
-			var bufferLength = 50;
 			var posicionNivel = 1;
 			var elevador = false;
-			var buffer = new byte[bufferLength];
 
-			// aqui necesito un bufer que mande a llamar al archivo guardado en la API
-			// a continuacion se coloca lo que ira dentro del foreach del buffer
-			byte item = 32; // se coloco esta variable provisionalmente, al momento de poner el buffer se eliminará
-			if (!BytesExistentes.Contains(item))
+			foreach (var item in texto)
 			{
-				BytesExistentes.Add(item);
-			}
-			DicNiveles.ElementAt(posicionNivel - 1).Value.ListaCaracter.Add(item);
-			if (!elevador)
-			{
-				if (posicionNivel == niveles)
+				if (!BytesExistentes.Contains(item))
 				{
-					posicionNivel--;
-					elevador = true;
+					BytesExistentes.Add(item);
+				}
+				DicNiveles.ElementAt(posicionNivel - 1).Value.ListaCaracter.Add(item);
+				if (!elevador)
+				{
+					if (posicionNivel == niveles)
+					{
+						posicionNivel--;
+						elevador = true;
+					}
+					else
+					{
+						posicionNivel++;
+					}
 				}
 				else
 				{
-					posicionNivel++;
+					if (posicionNivel == 1)
+					{
+						posicionNivel++;
+						elevador = false;
+					}
+					else
+					{
+						posicionNivel--;
+					}
 				}
 			}
-			else
-			{
-				if (posicionNivel == 1)
-				{
-					posicionNivel++;
-					elevador = false;
-				}
-				else
-				{
-					posicionNivel--;
-				}
-			}
-			// aqui termina el segmento que va dentro del foreach
-
-			// esta seccion es cuando faltan caracteres y se rellenan con un caracter aleatorio
-			byte caracterRelleno = 36;
 			
+			byte caracterRelleno = 36;
 			if (!BytesExistentes.Contains(36))
 			{
 				caracterRelleno = 254;
@@ -111,10 +106,11 @@ namespace Cifrados.Modelo
 				{
 					caracterRelleno--;
 				}
-
 			}
+			var caracteresExtra = 0;
 			while (posicionNivel - 1 != 1)
 			{
+				caracteresExtra++;
 				DicNiveles.ElementAt(posicionNivel - 1).Value.ListaCaracter.Add(caracterRelleno);
 				if (!elevador)
 				{
@@ -142,7 +138,21 @@ namespace Cifrados.Modelo
 				}
 
 			}
-			return null;
+			var TextoCifrado = new byte[texto.Length + caracteresExtra];
+			var escalera = 0;
+			var posicion = 0;
+			while (escalera < niveles)
+			{
+				foreach (var item in DicNiveles.ElementAt(escalera).Value.ListaCaracter)
+				{
+					TextoCifrado[posicion] = item;
+					posicion++;
+				}
+
+				escalera++;
+			}
+
+			return TextoCifrado;
 		}
 
 		public static byte[] DescifrarLectura(byte[] texto, int niveles)
