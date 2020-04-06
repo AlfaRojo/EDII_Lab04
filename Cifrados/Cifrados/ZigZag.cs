@@ -193,30 +193,30 @@ namespace Cifrados.Modelo
 
 			int auxiliarIntermedios = nivelIntermedio;
 			int conteoIntermedios = valorIntermedio;
-			int bufferLength = 50;
-			var buffer = new byte[bufferLength];
-			// aqui necesito un bufer que mande a llamar al archivo guardado en la API
-			// a continuacion se coloca lo que ira dentro del foreach del buffer
-			byte item = 32; // se coloco esta variable provisionalmente, al momento de poner el buffer se eliminará
-			if (picoSuperior > 0)
+			
+			foreach(var item in texto)
 			{
-				DicNiveles.ElementAt(0).Value.ListaCaracter.Add(item);
-				picoSuperior--;
-			}
-			else if (picoSuperior == 0 && auxiliarIntermedios > 0)
-			{
-				DicNiveles.ElementAt((nivelIntermedio - auxiliarIntermedios) + 1).Value.ListaCaracter.Add(item);
-				conteoIntermedios--;
-				if (conteoIntermedios == 0 && nivelIntermedio > 0)
+				if (picoSuperior > 0)
 				{
-					auxiliarIntermedios--;
-					conteoIntermedios = valorIntermedio;
+					DicNiveles.ElementAt(0).Value.ListaCaracter.Add(item);
+					picoSuperior--;
+				}
+				else if (picoSuperior == 0 && auxiliarIntermedios > 0)
+				{
+					DicNiveles.ElementAt((nivelIntermedio - auxiliarIntermedios) + 1).Value.ListaCaracter.Add(item);
+					conteoIntermedios--;
+					if (conteoIntermedios == 0 && nivelIntermedio > 0)
+					{
+						auxiliarIntermedios--;
+						conteoIntermedios = valorIntermedio;
+					}
+				}
+				else if (picoSuperior == 0 && auxiliarIntermedios == 0)
+				{
+					DicNiveles.ElementAt(niveles - 1).Value.ListaCaracter.Add(item);
 				}
 			}
-			else if (picoSuperior == 0 && auxiliarIntermedios == 0)
-			{
-				DicNiveles.ElementAt(niveles - 1).Value.ListaCaracter.Add(item);
-			}
+			
 			return null;
 		}
 	} 
