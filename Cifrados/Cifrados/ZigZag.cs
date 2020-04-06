@@ -1,13 +1,55 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Text;
 
 namespace Cifrados.Modelo
 {
 	public class ZigZag
 	{
-		Dictionary<int, Caracter> DicNiveles = new Dictionary<int, Caracter>();
-		List<byte> BytesExistentes = new List<byte>();
-		public void CifrarLectura (string direccion, int niveles)
+		static Dictionary<int, Caracter> DicNiveles = new Dictionary<int, Caracter>();
+		static List<byte> BytesExistentes = new List<byte>();
+
+		public void TodoZigZag(FileStream ArchivoImportado, string opcion, int niveles)
+		{
+			var nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
+			var extrencion = Path.GetExtension(ArchivoImportado.Name);
+			if (ArchivoImportado != null)
+			{
+				var archivoByte = new byte[ArchivoImportado.Length];
+				var i = 0;
+				using (var lectura = new BinaryReader(ArchivoImportado))
+				{
+					while (lectura.BaseStream.Position != lectura.BaseStream.Length)
+					{
+						archivoByte[i] = lectura.ReadByte();
+						i++;
+					}
+				}
+				var txtResultado = new byte[1];
+				if (opcion == "Cifrar")
+				{
+
+					var txtDesifrado = CifrarLectura(archivoByte, niveles);
+					txtResultado = new byte[txtDesifrado.Length];
+					txtResultado = txtDesifrado;
+				}
+				else
+				{
+					var txtCifrado = DescifrarLectura(archivoByte, niveles);
+					txtResultado = new byte[txtCifrado.Length];
+					txtResultado = txtCifrado;
+				}
+				using (var writeStream = new FileStream(("Mis Cifrados/CIFRADO_" + opcion+"_" + nombreArchivo + ".txt"), FileMode.OpenOrCreate))
+				{
+					using (var writer = new BinaryWriter(writeStream))
+					{
+						writer.Write(txtResultado);
+					}
+				}
+			}
+		}
+		public static byte[] CifrarLectura (byte[] texto, int niveles)
 		{
 			var ContadorNiveles = 0;
 			while (ContadorNiveles < niveles)
@@ -100,9 +142,10 @@ namespace Cifrados.Modelo
 				}
 
 			}
+			return null;
 		}
 
-		public void DescifrarLEctura (string direccion, int niveles, int cantCaracteres)
+		public static byte[] DescifrarLectura(byte[] texto, int niveles)
 		{
 			int contadorNiveles = 0;
 			while (contadorNiveles < niveles)
@@ -119,13 +162,13 @@ namespace Cifrados.Modelo
 			int p = (niveles - 2) * 2;
 			int longitudRelativa = 0;
 
-			if (cantCaracteres <= cantMinima)
+			if (texto.Length <= cantMinima)
 			{
 				longitudRelativa = cantMinima;
 			}
 			else
 			{
-				int elementosExtra = cantCaracteres - cantMinima;
+				int elementosExtra = texto.Length - cantMinima;
 				int repetirUve = elementosExtra / uveNueva;
 				if (elementosExtra % uveNueva != 0)
 				{
@@ -164,7 +207,7 @@ namespace Cifrados.Modelo
 			{
 				DicNiveles.ElementAt(niveles - 1).Value.ListaCaracter.Add(item);
 			}
-
+			return null;
 		}
-	}
+	} 
 }
