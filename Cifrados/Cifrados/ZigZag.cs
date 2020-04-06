@@ -216,8 +216,88 @@ namespace Cifrados.Modelo
 					DicNiveles.ElementAt(niveles - 1).Value.ListaCaracter.Add(item);
 				}
 			}
-			
-			return null;
+
+			var TextoDescifrado = new byte[texto.Length];
+
+			var pos = 0;
+			var posNivel = 1;
+			bool elevador = false;
+			bool intermedios = false;
+			var posArregloValor = 0;
+			var conteo = texto.Length;
+			List<byte> prueba = new List<byte>();
+			while (conteo > 0)
+			{
+				if (intermedios == true)
+				{
+					if (elevador == false)
+					{
+						TextoDescifrado[pos] = DicNiveles.ElementAt(posNivel - 1).Value.ListaCaracter.ElementAt(posArregloValor * 2);
+						pos++;
+					}
+					else
+					{
+						TextoDescifrado[pos] = DicNiveles.ElementAt(posNivel - 1).Value.ListaCaracter.ElementAt((posArregloValor * 2) + 1);
+						pos++;
+					}
+				}
+				else
+				{
+					TextoDescifrado[pos] = DicNiveles.ElementAt(posNivel - 1).Value.ListaCaracter.ElementAt(posArregloValor);
+					pos++;
+				}
+				if (!elevador)
+				{
+					if (posNivel != niveles)
+					{
+						if (posNivel + 1 == niveles)
+						{
+							intermedios = false;
+						}
+						else if (posNivel == 1)
+						{
+							intermedios = true;
+						}
+						posNivel++;
+					}
+					else
+					{
+						posNivel--;
+						elevador = true;
+						intermedios = true;
+					}
+				}
+				else
+				{
+					if (posNivel != 1)
+					{
+						if (posNivel - 1 == 1)
+						{
+							intermedios = false;
+							posArregloValor++;
+
+						}
+						else if (posNivel == niveles)
+						{
+							intermedios = true;
+						}
+						posNivel--;
+					}
+					else
+					{
+						posNivel++;
+						elevador = false;
+						intermedios = true;
+					}
+
+				}
+
+				conteo--;
+
+			}
+
+
+			return TextoDescifrado;
 		}
 	} 
 }
