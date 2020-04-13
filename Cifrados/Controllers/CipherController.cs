@@ -21,7 +21,7 @@ namespace Cifrados.Controllers
             {
                 return BadRequest(new string[] { "Extensión no válida" });
             }
-            else if (Tipos.Niveles > 0)
+            else if (Tipos.Niveles == 0)
             {
                 return BadRequest(new string[] { "El valor -Niveles- es inválido" });
             }
@@ -68,11 +68,11 @@ namespace Cifrados.Controllers
             {
                 return BadRequest(new string[] { "El valor -File- es inválido" });
             }
-            else if (Path.GetExtension(Tipos.File.Name) != ".txt")
+            else if (Path.GetExtension(Tipos.File.FileName) != ".txt")
             {
                 return BadRequest(new string[] { "Extensión no válida" });
             }
-            else if (Tipos.Ancho > 0)
+            else if (Tipos.Ancho == 0)
             {
                 return BadRequest(new string[] { "El valor -Ancho- es inválido" });
             }

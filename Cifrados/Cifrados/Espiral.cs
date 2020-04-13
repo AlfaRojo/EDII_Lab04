@@ -24,8 +24,7 @@ namespace Cifrados.Cifrados
                 var txtResultado = new byte[1];
                 if (opcion == "Cifrar")
                 {
-
-                    var txtDesifrado = CifradoEspiral(ancho, reloj, archivoByte);
+                    var txtDesifrado = CifrarEspiral(ancho, reloj, archivoByte);
                     txtResultado = new byte[txtDesifrado.Length];
                     txtResultado = txtDesifrado;
                 }
@@ -44,7 +43,7 @@ namespace Cifrados.Cifrados
                 }
             }
         }
-        public static byte[] DesifrarEspiral(int Ancho, string Abajo, byte[] txtEncript)
+        public static byte[] CifrarEspiral(int Ancho, string Abajo, byte[] txtEncript)
         {
             var DivisionAncho = Math.Ceiling(Convert.ToDecimal(txtEncript.Length) / Convert.ToDecimal(Ancho));
             var Altura = Convert.ToInt32(DivisionAncho);
@@ -169,7 +168,7 @@ namespace Cifrados.Cifrados
             }
             return REGRESA;
         }
-        public static byte[] CifradoEspiral(int Ancho, string Abajo, byte[] txtEncript)
+        public static byte[] DesifrarEspiral(int Ancho, string Abajo, byte[] txtEncript)
         {
             var DivisionAncho = Math.Ceiling(Convert.ToDecimal(txtEncript.Length) / Convert.ToDecimal(Ancho));
             var Altura = Convert.ToInt32(DivisionAncho);
